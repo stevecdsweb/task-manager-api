@@ -66,7 +66,7 @@ router.patch('/users/me', auth, async (req, res) => {
     try {
         updates.forEach((update) => req.user[update] = req.body[update])
         await req.user.save()
-        res.send(req.user)
+        res.status(200).send(req.user)
     } catch (e) {
         res.status(400).send(e)
     }
@@ -76,7 +76,7 @@ router.delete('/users/me', auth, async (req, res) => {
     try {
         await req.user.remove()
         sendCancelationEmail(req.user.email, req.user.name)
-        res.send(req.user)
+        res.status(200).send(req.user)
     } catch (e) {
         res.status(500).send()
     }
@@ -99,7 +99,7 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
     const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
     req.user.avatar = buffer
     await req.user.save()
-    res.send()
+    res.status(200).send()
 }, (error, req, res, next) => {
     res.status(400).send({ error: error.message })
 })
